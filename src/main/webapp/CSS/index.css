@@ -1,0 +1,41 @@
+/* Estilo general del body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Encabezado principal */
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+/* Lista de enlaces */
+ul {
+    list-style-type: none;
+    padding: 0;
+    max-width: 300px;
+    margin: 30px auto;
+}
+
+li {
+    margin: 10px 0;
+}
+
+/* Estilo de los enlaces */
+a {
+    text-decoration: none;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    display: block;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #0056b3;
+}
