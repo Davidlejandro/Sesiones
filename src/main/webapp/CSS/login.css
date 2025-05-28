@@ -1,30 +1,49 @@
-/* bienvenida.css */
-
+/* Estilo general para el cuerpo de la página */
 body {
+    /* Fuente moderna y legible */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Color de fondo claro para mejor lectura */
     background-color: #ecf0f1;
+    /* Color de texto oscuro para buen contraste */
     color: #2c3e50;
+    /* Centrar todo el texto dentro del body */
     text-align: center;
+    /* Espaciado interno para separar contenido de los bordes */
     padding: 50px;
 }
 
+/* Estilo para el encabezado principal h1 */
 h1 {
+    /* Color verde vibrante para destacar */
     color: #27ae60;
+    /* Tamaño de fuente grande para jerarquía visual */
     font-size: 2em;
+    /* Margen inferior para separar del contenido siguiente */
     margin-bottom: 30px;
 }
 
+/* Estilo para los enlaces (links) */
 a {
+    /* Mostrar como bloque en línea para que los padding afecten bien */
     display: inline-block;
+    /* Espaciado externo para separar enlaces entre sí */
     margin: 10px;
+    /* Espaciado interno para hacer los botones más grandes y clicables */
     padding: 12px 24px;
+    /* Quitar el subrayado por defecto */
     text-decoration: none;
+    /* Color de texto blanco para contraste con el fondo */
     color: white;
+    /* Fondo azul para dar apariencia de botón */
     background-color: #2980b9;
+    /* Bordes redondeados para suavizar el diseño */
     border-radius: 8px;
+    /* Transición suave para el cambio de color al pasar el mouse */
     transition: background-color 0.3s ease;
 }
 
+/* Estilo para el hover (cuando el usuario pasa el cursor por encima del enlace) */
 a:hover {
+    /* Cambia a un azul más oscuro para indicar interactividad */
     background-color: #1c5980;
 }

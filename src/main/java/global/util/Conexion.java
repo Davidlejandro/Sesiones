@@ -10,7 +10,7 @@ public class Conexion {
     //1) Inicializo 3 variables globales
     //Creo el url para la conexión con la bdd
     //jdbc:bdd://localhost:3306/nombreBDD?zonaHoraria
-    private static String url = "jdbc:mysql://localhost:3306/facturacion_electronica?serverTimezone=UTC";
+    private static String url = "jdbc:mysql://localhost:3306/trabajoenclase?serverTimezone=UTC";
     //colocamos el usuario
     private static String username = "root";
     //Contraseña del usuario, si no hay dejar las comillas

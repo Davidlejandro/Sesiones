@@ -1,0 +1,87 @@
+body {
+    /* Fuente simple y legible */
+    font-family: Arial, sans-serif;
+    /* Fondo con degradado horizontal suave */
+    background: linear-gradient(to right, #3f87a6, #ebf8e1);
+    /* Usamos flexbox para centrar vertical y horizontalmente el contenido */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center;     /* Centra verticalmente */
+    /* Ocupa toda la altura visible del navegador */
+    height: 100vh;
+}
+
+/* Contenedor principal del formulario de login */
+.login-container {
+    /* Fondo blanco para destacar sobre el fondo */
+    background-color: white;
+    /* Espaciado interno para que el contenido no esté pegado a los bordes */
+    padding: 2rem;
+    /* Bordes redondeados para diseño moderno y amigable */
+    border-radius: 10px;
+    /* Sombra suave alrededor para darle profundidad */
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    /* Ancho fijo para mantener consistencia */
+    width: 350px;
+    /* Centrar texto dentro del contenedor */
+    text-align: center;
+}
+
+/* Estilo para el título del formulario */
+h2 {
+    /* Separación inferior para espacio visual */
+    margin-bottom: 20px;
+    /* Color gris oscuro para buen contraste */
+    color: #333;
+}
+
+/* Formulario usa flexbox en columna para ordenar los inputs verticalmente */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Etiquetas de los inputs */
+label {
+    /* Margen para separar de otros elementos */
+    margin: 10px 0 5px;
+    /* Alineación a la izquierda para mejor lectura */
+    text-align: left;
+    /* Texto en negrita para destacar */
+    font-weight: bold;
+}
+
+/* Estilos para los campos de texto y contraseña */
+input[type="text"],
+input[type="password"] {
+    /* Espacio interno para mejor interacción */
+    padding: 10px;
+    /* Bordes redondeados */
+    border-radius: 5px;
+    /* Borde gris claro para definir campo */
+    border: 1px solid #ccc;
+}
+
+/* Estilo del botón de enviar */
+button {
+    /* Separación superior para distanciar del último input */
+    margin-top: 20px;
+    /* Espaciado interno para tamaño cómodo */
+    padding: 10px;
+    /* Fondo azul para destacar botón */
+    background-color: #3f87a6;
+    /* Texto blanco para contraste */
+    color: white;
+    /* Sin borde */
+    border: none;
+    /* Bordes redondeados */
+    border-radius: 5px;
+    /* Cambia cursor a mano para indicar clickeable */
+    cursor: pointer;
+}
+
+/* Efecto hover para el botón */
+button:hover {
+    /* Azul más oscuro al pasar el mouse */
+    background-color: #2f6e8e;
+}
