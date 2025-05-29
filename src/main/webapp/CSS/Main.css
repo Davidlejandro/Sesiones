@@ -2,13 +2,13 @@ body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f6f8;
+    background-color: #e6f2e6; /* verde claro tipo niebla */
 }
 
 .navbar {
-    background-color: #2c3e50;
+    background-color: #2e4600; /* verde musgo oscuro */
     padding: 1rem 2rem;
-    color: white;
+    color: #fdf6e3; /* beige suave */
     text-align: center;
 }
 
@@ -19,8 +19,8 @@ body {
 
 .sidebar {
     width: 220px;
-    background-color: #34495e;
-    color: white;
+    background-color: #3b5323; /* verde bosque */
+    color: #f0f5e1; /* blanco verdoso */
     padding: 1rem;
 }
 
@@ -34,13 +34,14 @@ body {
 }
 
 .sidebar a {
-    color: white;
+    color: #dcedc1; /* verde menta claro */
     text-decoration: none;
     font-weight: bold;
 }
 
 .sidebar a:hover {
     text-decoration: underline;
+    color: #c5e1a5;
 }
 
 .main-content {
@@ -50,36 +51,36 @@ body {
 }
 
 h2 {
-    color: #2c3e50;
+    color: #2e4600;
     margin-bottom: 1rem;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #fdf6e3;
+    box-shadow: 0 0 10px rgba(34, 49, 34, 0.1);
 }
 
 th, td {
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #a3b18a;
     text-align: center;
 }
 
 th {
-    background-color: #2980b9;
-    color: white;
+    background-color: #556b2f; /* oliva oscuro */
+    color: #f0f5e1;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #eef5e6; /* verde claro */
 }
 
 input[type="submit"] {
     padding: 6px 12px;
     margin: 2px;
-    background-color: #27ae60;
+    background-color: #6b8e23; /* verde oliva */
     color: white;
     border: none;
     border-radius: 4px;
@@ -87,5 +88,5 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #1e8449;
+    background-color: #556b2f;
 }

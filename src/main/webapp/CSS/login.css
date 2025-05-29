@@ -1,4 +1,3 @@
-/* Estilo general para el cuerpo de la página */
 body {
     /* Fuente moderna y legible */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,8 +10,6 @@ body {
     /* Espaciado interno para separar contenido de los bordes */
     padding: 50px;
 }
-
-/* Estilo para el encabezado principal h1 */
 h1 {
     /* Color verde vibrante para destacar */
     color: #27ae60;
@@ -21,8 +18,6 @@ h1 {
     /* Margen inferior para separar del contenido siguiente */
     margin-bottom: 30px;
 }
-
-/* Estilo para los enlaces (links) */
 a {
     /* Mostrar como bloque en línea para que los padding afecten bien */
     display: inline-block;
@@ -41,7 +36,6 @@ a {
     /* Transición suave para el cambio de color al pasar el mouse */
     transition: background-color 0.3s ease;
 }
-
 /* Estilo para el hover (cuando el usuario pasa el cursor por encima del enlace) */
 a:hover {
     /* Cambia a un azul más oscuro para indicar interactividad */

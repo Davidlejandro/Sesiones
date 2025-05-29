@@ -13,7 +13,7 @@ public static void main(String[] args) {
     try (Connection conn = Conexion.getConnection()) {
         //si la conexión no es nula y no está cerrada entonces me dirá exitosa
         if (conn != null && !conn.isClosed()) {
-            System.out.println(" ¡Conexión exitosa!");
+            System.out.println(" ¡Conexión exitosa, soy dios!");
             //caso contrario, me dira un error de conexión
         } else {
             System.out.println("No se pudo establecer la conexión.");

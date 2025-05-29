@@ -13,11 +13,11 @@ public interface Repository <T> {
     List<T> listar() throws SQLException;
 
     //Este método me permite buscar un elemento de la BDD por su identificador
-    T porId(int id) throws SQLException;
+    T porId(Long id) throws SQLException;
 
     //Este método me permite crear un nuevo registro a la BDD
     void guardar(T t) throws SQLException;
 
     //Este método me permite eliminar un registro de la bdd que recibe el parÁmetro de Id
-    void eliminar(int id) throws SQLException;
+    void eliminar(Long id) throws SQLException;
 }

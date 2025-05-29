@@ -34,12 +34,12 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria> {
 
 
     @Override
-    public Categoria porId(int id) throws SQLException { //Aquí está el id del método
+    public Categoria porId(Long id) throws SQLException { //Aquí está el id del método
         //Creo un objeto de tipo categoría nulo
         Categoria categoria = null;
         try(PreparedStatement stmt = conn.prepareStatement(
                 "select * from categoria where id = ?")){ //Selecciona todo de categoria donde el id del método
-            stmt.setInt(1, id); //Setea el valor en la columna número uno
+            stmt.setLong(1, id); //Setea el valor en la columna número uno
             try(ResultSet rs = stmt.executeQuery()){
                 categoria = getCategoria(rs);
             }
@@ -49,43 +49,41 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria> {
 
     @Override
     public void guardar(Categoria categoria) throws SQLException {
-        //declaro una variable de tipo string
+        // Declaración de la variable SQL
         String sql;
-        //si el id de categoria es distinto de nulo y es mayor a 0
 
-        if (categoria.getIdCategoria() != null || categoria.getIdCategoria() > 0) {
-            //en la variable sql va a guardar el siguiente sql
-            sql = "update categoria set nombre=?, descripcion=? where idCategoria=?";
-        } else {
-            sql = "insert into categoria(nombre, descripcion, condicion) values(?, ?, 1)";
-        }
+        // Determina si se trata de una actualización (UPDATE) o una inserción nueva (INSERT)
+        boolean esUpdate = categoria.getIdCategoria() != null && categoria.getIdCategoria() > 0;
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // Establece el nombre de la categoría en el primer parámetro del SQL
-            stmt.setString(1, categoria.getNombre());
-
-            // Establece la descripción de la categoría en el segundo parámetro
-            stmt.setString(2, categoria.getDescripcion());
-
-            // Establece el ID de la categoría (clave primaria) como tercer parámetro
-            stmt.setInt(3, categoria.getIdCategoria());
-
-            // Ejecuta la actualización (UPDATE)
-            stmt.executeUpdate();
-            }
-
-        }
-        @Override
-        public void eliminar(int id) throws SQLException {
-            String sql = "update categoria set condicion = 0 where idCategoria = ?";
-
+        if (esUpdate) {
+            // Si el ID existe, se actualiza la categoría existente
+            sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE idCategoria = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // Marca la categoría como inactiva (eliminación lógica)
-                stmt.setInt(1, id);
+                stmt.setString(1, categoria.getNombre());
+                stmt.setString(2, categoria.getDescripcion());
+                stmt.setLong(3, categoria.getIdCategoria());
+                stmt.executeUpdate();
+            }
+        } else {
+            // Si el ID no existe, se inserta una nueva categoría
+            // La condición se pone en 1 por defecto (activo)
+            sql = "INSERT INTO categoria (nombre, descripcion, condicion) VALUES (?, ?, 1)";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, categoria.getNombre());
+                stmt.setString(2, categoria.getDescripcion());
                 stmt.executeUpdate();
             }
         }
+    }
 
+    @Override
+    public void eliminar(Long id) throws SQLException {
+        String sql = "UPDATE categoria SET condicion = 0 WHERE idCategoria = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+        }
+    }
 
 
 
@@ -95,7 +93,7 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria> {
         c.setNombre(rs.getString("nombre")); //Settear el nombre del método getString del javaBeans
         c.setDescripcion(rs.getString("descripcion"));
         c.setCondicion(rs.getInt("condicion"));
-        c.setIdCategoria(rs.getInt("idCategoria"));
+        c.setIdCategoria(rs.getLong("idCategoria"));
         return c;
     }
 }
