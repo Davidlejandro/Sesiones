@@ -26,9 +26,9 @@ public class CategoriaServiceJdbcImplements implements CategoriaService {
     }
 
     @Override
-    public Optional<Categoria> porId(Long id) {
+    public Optional<Categoria> porId(Long idCategoria) {
         try {
-            return Optional.ofNullable(repositoryJdbc.porId(id));
+            return Optional.ofNullable(repositoryJdbc.porId(idCategoria));
         }catch ( SQLException throwables){
             throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
         }
@@ -39,6 +39,23 @@ public class CategoriaServiceJdbcImplements implements CategoriaService {
         try {
             repositoryJdbc.guardar(categoria);
         }catch ( SQLException throwables){
+            throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
+        }
+    }
+    @Override
+    public void eliminar(Long idCategoria) {
+        try {
+            repositoryJdbc.eliminar(idCategoria);
+        }catch (SQLException throwables){
+            throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
+        }
+    }
+
+    @Override
+    public void toggleCondicion(Long idCategoria) {
+        try {
+            repositoryJdbc.toggleCondicion(idCategoria);
+        }catch (SQLException throwables){
             throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
         }
     }

@@ -34,14 +34,16 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria> {
 
 
     @Override
-    public Categoria porId(Long id) throws SQLException { //Aquí está el id del método
+    public Categoria porId(Long idCategoria) throws SQLException { //Aquí está el id del método
         //Creo un objeto de tipo categoría nulo
         Categoria categoria = null;
         try(PreparedStatement stmt = conn.prepareStatement(
-                "select * from categoria where id = ?")){ //Selecciona todo de categoria donde el id del método
-            stmt.setLong(1, id); //Setea el valor en la columna número uno
+                "select * from categoria where idCategoria = ?")){ //Selecciona todo de categoria donde el id del método
+            stmt.setLong(1, idCategoria); //Setea el valor en la columna número uno
             try(ResultSet rs = stmt.executeQuery()){
-                categoria = getCategoria(rs);
+                if(rs.next()){
+                    categoria = getCategoria(rs);
+                }
             }
         }
         return categoria;
@@ -77,13 +79,24 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria> {
     }
 
     @Override
-    public void eliminar(Long id) throws SQLException {
+    public void eliminar(Long idCategoria) throws SQLException {
         String sql = "UPDATE categoria SET condicion = 0 WHERE idCategoria = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, id);
+            stmt.setLong(1, idCategoria);
             stmt.executeUpdate();
         }
     }
+
+
+    @Override
+    public void toggleCondicion(Long idCategoria) throws SQLException {
+        String sql = "UPDATE categoria SET condicion = CASE WHEN condicion = 1 THEN 0 ELSE 1 END WHERE idCategoria = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, idCategoria);
+            stmt.executeUpdate();
+        }
+    }
+
 
 
 

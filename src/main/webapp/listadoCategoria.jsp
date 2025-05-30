@@ -11,20 +11,16 @@
     List<Categoria> categorias = (List<Categoria>) request.getAttribute("categorias");
     Optional<String> username = (Optional<String>) request.getAttribute("username");
 %>
-
 <html>
-
 <head>
     <title>Listado Categoría</title>
 </head>
-
 <body>
 <%
     if(username.isPresent()){%>
 <div style="color:blue;"> Hola <%= username.get()%>, bienvenido a la aplicación</div>
 <div><p><a href="${pageContext.request.contextPath}/categoria/form">Ingrese el producto</a></p></div>
 <%}%>
-
 <h1>Listado Categoría</h1>
 <table>
     <thead>
@@ -34,7 +30,6 @@
     <th>Condición</th>
     <th>Acciones</th>
     </thead>
-
     <%
         for (Categoria cat : categorias) {  %>
     <tbody>
@@ -42,15 +37,11 @@
     <td><%=cat.getNombre()%> </td >
     <td><%=cat.getDescripcion()%> </td >
     <td><%=cat.getCondicion()%> </td>
-    <td><a href="">Editar</a></td>
-    <td><a href="">Activar o Desactivar</a></td>
+    <td><a href="<%= request.getContextPath() %>/categoria/form?idCategoria=<%= cat.getIdCategoria() %>">Editar</a></td>
+    <td><a href="<%= request.getContextPath() %>/categoria/toggle?idCategoria=<%= cat.getIdCategoria() %>"
+           onclick="return confirm('¿Está seguro que desea cambiar el estado de esta categoría?');">Activar o Desactivar</a></td>
     </tbody>
     <% } %>
-
-
-
 </table>
-
 </body>
-
 </html>
