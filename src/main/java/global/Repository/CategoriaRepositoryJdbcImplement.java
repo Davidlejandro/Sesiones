@@ -51,51 +51,53 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria> {
 
     @Override
     public void guardar(Categoria categoria) throws SQLException {
-        // Declaración de la variable SQL
         String sql;
 
-        // Determina si se trata de una actualización (UPDATE) o una inserción nueva (INSERT)
-        boolean esUpdate = categoria.getIdCategoria() != null && categoria.getIdCategoria() > 0;
-
-        if (esUpdate) {
-            // Si el ID existe, se actualiza la categoría existente
-            sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE idCategoria = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, categoria.getNombre());
-                stmt.setString(2, categoria.getDescripcion());
-                stmt.setLong(3, categoria.getIdCategoria());
-                stmt.executeUpdate();
-            }
+        if (categoria.getIdCategoria() != null && categoria.getIdCategoria() > 0) {
+            sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE idcategoria = ?";
         } else {
-            // Si el ID no existe, se inserta una nueva categoría
-            // La condición se pone en 1 por defecto (activo)
-            sql = "INSERT INTO categoria (nombre, descripcion, condicion) VALUES (?, ?, 1)";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, categoria.getNombre());
-                stmt.setString(2, categoria.getDescripcion());
-                stmt.executeUpdate();
+            sql = "INSERT INTO categoria(nombre, descripcion, condicion) VALUES (?, ?, 1)";
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, categoria.getNombre());
+            stmt.setString(2, categoria.getDescripcion());
+
+            if (categoria.getIdCategoria() != null && categoria.getIdCategoria() > 0) {
+                stmt.setLong(3, categoria.getIdCategoria());
             }
+
+            stmt.executeUpdate(); // <-- ESTA LÍNEA ES FUNDAMENTAL
         }
     }
 
     @Override
     public void eliminar(Long idCategoria) throws SQLException {
-        String sql = "UPDATE categoria SET condicion = 0 WHERE idCategoria = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, idCategoria);
-            stmt.executeUpdate();
+        // Consulta para obtener el estado actual
+        String selectSql = "SELECT condicion FROM categoria WHERE idCategoria = ?";
+        // Consulta para actualizar el estado
+        String updateSql = "UPDATE categoria SET condicion = ? WHERE idCategoria = ?";
+
+        try (
+                PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+                PreparedStatement updateStmt = conn.prepareStatement(updateSql)
+        ) {
+            selectStmt.setLong(1, idCategoria);
+            ResultSet rs = selectStmt.executeQuery();
+
+            if (rs.next()) {
+                int condicionActual = rs.getInt("condicion");
+                int nuevaCondicion = (condicionActual == 1) ? 0 : 1; // toggle
+
+                updateStmt.setInt(1, nuevaCondicion);
+                updateStmt.setLong(2, idCategoria);
+                updateStmt.executeUpdate();
+            }
         }
     }
 
 
-    @Override
-    public void toggleCondicion(Long idCategoria) throws SQLException {
-        String sql = "UPDATE categoria SET condicion = CASE WHEN condicion = 1 THEN 0 ELSE 1 END WHERE idCategoria = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, idCategoria);
-            stmt.executeUpdate();
-        }
-    }
+
 
 
 

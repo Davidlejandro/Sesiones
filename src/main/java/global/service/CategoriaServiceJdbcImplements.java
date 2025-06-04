@@ -50,13 +50,5 @@ public class CategoriaServiceJdbcImplements implements CategoriaService {
             throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
         }
     }
-
-    @Override
-    public void toggleCondicion(Long idCategoria) {
-        try {
-            repositoryJdbc.toggleCondicion(idCategoria);
-        }catch (SQLException throwables){
-            throw new ServiceJdbcException(throwables.getMessage(),throwables.getCause());
-        }
-    }
 }
+

@@ -20,21 +20,63 @@ import java.util.Optional;
 public class CategoriaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Creamos la conexión
+        try {
+            Connection conn = (Connection) req.getAttribute("conn");
+            CategoriaService service = new CategoriaServiceJdbcImplements(conn);
+            List<Categoria> categorias = service.listar();
+
+            LoginService auth = new LoginServiceSessionImplement();
+            Optional<String> userName = auth.getUserName(req);
+
+            req.setAttribute("categorias", categorias);
+            req.setAttribute("username", userName);
+
+            getServletContext().getRequestDispatcher("/listadoCategoria.jsp").forward(req, resp);
+        } catch (Exception e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al cargar la página");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection conn = (Connection) req.getAttribute("conn");
-
-        // Creamos el servicio de categorías
         CategoriaService service = new CategoriaServiceJdbcImplements(conn);
-        List<Categoria> categorias = service.listar();
 
-        // Obtenemos el nombre del usuario desde la sesión
-        LoginService auth = new LoginServiceSessionImplement();
-        Optional<String> userName = auth.getUserName(req);
+        String nombre = req.getParameter("nombre");
+        String descripcion = req.getParameter("descripcion");
 
-        // Seteamos los parámetros para la vista
-        req.setAttribute("categorias", categorias);
-        req.setAttribute("username", userName); // por si está vacío
-        // Redireccionamos a la vista JSP
-        getServletContext().getRequestDispatcher("/listadoCategoria.jsp").forward(req, resp);
+        // Validar campos obligatorios
+        if (nombre == null || nombre.trim().isEmpty() || descripcion == null || descripcion.trim().isEmpty()) {
+            try {
+                List<Categoria> categorias = service.listar();
+                req.setAttribute("categorias", categorias);
+            } catch (Exception e) {
+                // Puedes loguear el error aquí si quieres
+            }
+
+            req.setAttribute("error", "El nombre y la descripción son obligatorios.");
+            req.setAttribute("categorias", new Categoria());  // Para evitar null en JSP
+            getServletContext().getRequestDispatcher("/formularioCategoria.jsp").forward(req, resp);
+            return;
+        }
+
+        Long idCategoria;
+        try {
+            idCategoria = Long.parseLong(req.getParameter("idCategoria"));
+        } catch (NumberFormatException e) {
+            idCategoria = 0L;
+        }
+
+        Categoria categoria = new Categoria();
+        categoria.setIdCategoria(idCategoria);
+        categoria.setNombre(nombre);
+        categoria.setDescripcion(descripcion);
+
+        try {
+            service.guardar(categoria);
+            resp.sendRedirect(req.getContextPath() + "/categoria");
+        } catch (Exception e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar la categoría");
+        }
     }
 }

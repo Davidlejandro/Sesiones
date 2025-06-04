@@ -21,5 +21,4 @@ public interface Repository <T> {
     //Este método me permite eliminar un registro de la bdd que recibe el parÁmetro de Id
     void eliminar(Long idCategoria) throws SQLException;
 
-    void toggleCondicion(Long idCategoria) throws SQLException;
 }

@@ -10,52 +10,55 @@ import java.io.PrintWriter;
 import java.util.Optional;
 
 // Definición del Servlet que manejará las rutas /login y /login.html
-@WebServlet({"/login", "/login.html"})
+//path o anotación
+@WebServlet({"/login","/login.html"})
 public class LoginServlet extends HttpServlet {
-    // Credenciales fijas para autenticación (en producción usar base de datos)
     final static String USERNAME = "admin";
     final static String PASSWORD = "12345";
 
-    // Método para manejar solicitudes GET (cuando se accede a la página)
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //implementamos el objeto de tipo sesion
+        LoginService auth=new LoginServiceSessionImplement();
+        //creamos una variable opcional
+        //para obtener el nombre del usuario
+        Optional<String> usernameOptional = auth.getUserName(req);
 
-        //Implementamos el objeto de tipo sesión
-        LoginService auth = new LoginServiceSessionImplement();
-        //Creamos una variable optional para obtener el nombre del usuario
-        Optional<String> usernameOptional= auth.getUserName(req);
 
-        // Si existe la cookie (usuario ya autenticado)
         if (usernameOptional.isPresent()) {
-            // 2) Si existe, nos mandará directamente al Main.jsp
-            getServletContext().getRequestDispatcher("/main.jsp").forward(req, resp);
-        } else {
-            // Si no hay cookie, mostrar el formulario de login (JSP)
-            getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
+            resp.setContentType("text/html;charset=UTF-8");
+            try(PrintWriter out = resp.getWriter()) {
+                //Creo la plantilla html
+                out.print("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<meta charset=\"utf-8\">");
+                out.println("<title>Hola usuario " + usernameOptional.get() +"</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Hola "+usernameOptional.get()+" ya iniciaste sesión anteriormente!</h1>");
+                out.println("<p><a href='"+req.getContextPath()+"/index.html'>Volver al inicio</a></p>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+        }else{
+            getServletContext().getRequestDispatcher("/login.jsp").forward(req,resp);
         }
     }
 
-    // Método para manejar solicitudes POST (envío del formulario de login)
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        if (username.equals(USERNAME) && password.equals(PASSWORD)) {
 
-        // Obtener parámetros del formulario
-        String username = req.getParameter("username"); //obtenemos el user del formulario
-        String password = req.getParameter("password"); //obtenemos el password del formulario
-
-        // Validar credenciales
-        if (username.equals(USERNAME) && password.equals(PASSWORD)) { //Si las credenciales son iguales
-            //1) Creamos la sesión
+            //creamo la sesión
             HttpSession session = req.getSession();
-            //2) Seteo los valores de la sesión
+            //Seteo lo valores de la sesion
             session.setAttribute("username", username);
 
-            // Redirigir a la página de login (mostrará mensaje de bienvenida)
-            resp.sendRedirect("login.html");
+            resp.sendRedirect(req.getContextPath()+"/login.html");
         } else {
-            // Si credenciales son inválidas, enviar error HTTP 401 (No autorizado)
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lo sentimos no tiene acceso");
         }
     }

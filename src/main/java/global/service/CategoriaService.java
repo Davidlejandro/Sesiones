@@ -10,6 +10,5 @@ public interface CategoriaService {
     Optional<Categoria> porId(Long idCategoria);
     void guardar(Categoria categoria);
     void eliminar(Long idCategoria);
-    void toggleCondicion(Long idCategoria);
 }
 
