@@ -1,55 +1,48 @@
 package global.models;
 
+
 public class Articulo {
-    private Integer idArticulo;
-    private Long idCategoria;
+    //declaramos los atributos de la clase Articulo en base a la tabla de la BBDD
+    private Long idArticulo;
+    private Categoria categoria;
     private String codigo;
     private String nombre;
-    private Integer stock;
+    private int stock;
     private String descripcion;
     private String imagen;
-    private Integer condicion;
+    private int condicion;
 
-    // Constructor vacío
-    public Articulo() {
+    //Implementamos el constructor vacio
+    public Articulo(){
+
     }
-
-    // Constructor con parámetros
-    public Articulo(Integer idArticulo, Long idCategoria, String codigo, String nombre,
-                    Integer stock, String descripcion, String imagen, Integer condicion) {
-        this.idArticulo = idArticulo;
-        this.idCategoria = idCategoria;
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.stock = stock;
-        this.descripcion = descripcion;
-        this.imagen = imagen;
-        this.condicion = condicion;
+    //Implmentamso un constructor que inicialice todos los parámetros
+    public Articulo(Long idArticulo, String tipo, String codigo, String nombre, int stock, String descripcion, String imagen, int condicion){
+        this.idArticulo=idArticulo;
+        Categoria categoria = new Categoria();
+        categoria.setNombre(tipo);
+        this.codigo=codigo;
+        this.nombre=nombre;
+        this.stock=stock;
+        this.descripcion=descripcion;
+        this.imagen=imagen;
+        this.condicion=condicion;
     }
-
-    // Getters y Setters
-    public Integer getIdArticulo() {
+    //métodos get and set
+    public Long getIdArticulo() {
         return idArticulo;
     }
 
-    public void setIdArticulo(Integer idArticulo) {
+    public void setIdArticulo(Long idArticulo) {
         this.idArticulo = idArticulo;
     }
 
-    public Long getIdCategoria() {
-        return idCategoria;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setIdCategoria(Long idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public String getNombre() {
@@ -60,11 +53,19 @@ public class Articulo {
         this.nombre = nombre;
     }
 
-    public Integer getStock() {
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public int getStock() {
         return stock;
     }
 
-    public void setStock(Integer stock) {
+    public void setStock(int stock) {
         this.stock = stock;
     }
 
@@ -84,11 +85,11 @@ public class Articulo {
         this.imagen = imagen;
     }
 
-    public Integer getCondicion() {
+    public int getCondicion() {
         return condicion;
     }
 
-    public void setCondicion(Integer condicion) {
+    public void setCondicion(int condicion) {
         this.condicion = condicion;
     }
 }

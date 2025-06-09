@@ -1,6 +1,9 @@
 package global.controllers;
 
 // Importaciones necesarias para el uso de servlets y clases auxiliares
+import global.models.Categoria;
+import global.service.CategoriaService;
+import global.service.CategoriaServiceJdbcImplements;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,118 +15,129 @@ import global.service.ArticuloServiceJdbcImplements;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-// Servlet que responde a la URL /articulo/form
-@WebServlet("/articulo/form")
+@WebServlet("/articulos/form")
 public class ArticuloFormControlador extends HttpServlet {
-
-    // Maneja las peticiones GET (por ejemplo, al acceder al formulario)
     @Override
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse resp) throws ServletException,
-            IOException {
-        // Recupera la conexión a la base de datos desde el request (establecida previamente)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         Connection conn = (Connection) req.getAttribute("conn");
+        ArticuloService articuloService = new ArticuloServiceJdbcImplements(conn);
+        CategoriaService categoriaService = new CategoriaServiceJdbcImplements(conn);
 
-        // Crea el servicio de artículo con implementación JDBC
-        ArticuloService service = new ArticuloServiceJdbcImplements(conn);
-
-        Integer id;
-        try {
-            // Intenta obtener el id del artículo desde los parámetros del request
-            id = Integer.parseInt(req.getParameter("idArticulo"));
-        } catch (NumberFormatException e) {
-            // Si no se puede convertir, se asigna 0 (nuevo artículo)
-            id = 0;
-        }
-
-        // Se inicializa un objeto Articulo vacío
+        List<Categoria> categorias = categoriaService.listar();
         Articulo articulo = new Articulo();
 
-        // Si el id es mayor que 0, se trata de una edición, no creación
-        if (id > 0) {
-            // Busca el artículo por ID
-            Optional<Articulo> optionalArticulo = service.porId(id.longValue());
-            if (optionalArticulo.isPresent()) {
-                // Si se encuentra, se usa el artículo existente
-                articulo = optionalArticulo.get();
-            }
+        if (req.getParameter("id") != null) {
+            Long id = Long.parseLong(req.getParameter("id"));
+            articulo = articuloService.porId(id);
         }
 
-        // Se añade el objeto artículo al request para usarlo en el JSP
+        req.setAttribute("categorias", categorias);
         req.setAttribute("articulo", articulo);
+        req.setAttribute("titulo", req.getParameter("id") != null ?
+                "Editar Artículo" : "Crear Artículo");
 
-        // Se redirige al JSP del formulario
-        getServletContext().getRequestDispatcher("/formularioArticulo.jsp").forward(req, resp);
+        getServletContext().getRequestDispatcher("/form-articulo.jsp").forward(req, resp);
     }
 
-    // Maneja las peticiones POST (cuando se envía el formulario)
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Se recupera la conexión desde el request
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         Connection conn = (Connection) req.getAttribute("conn");
-
-        // Se crea la instancia del servicio de artículo
         ArticuloService service = new ArticuloServiceJdbcImplements(conn);
+        CategoriaService categoriaService = new CategoriaServiceJdbcImplements(conn);
 
-        Integer idArticulo;
-        try {
-            // Se intenta obtener el id del artículo desde el formulario
-            idArticulo = Integer.parseInt(req.getParameter("idArticulo"));
-        } catch (NumberFormatException e) {
-            // Si falla, se asume que es un nuevo artículo
-            idArticulo = 0;
+        Map<String, String> errores = new HashMap<>();
+
+        // Validación de categoría
+        String categoriaId = req.getParameter("categoria");
+        if (categoriaId == null || categoriaId.isEmpty()) {
+            errores.put("categoria", "La categoría es requerida");
         }
 
-        Long idCategoria;
-        try {
-            // Se obtiene el id de la categoría
-            idCategoria = Long.parseLong(req.getParameter("idCategoria"));
-        } catch (NumberFormatException e) {
-            // Si no es válido, se asigna 0L por defecto
-            idCategoria = 0L;
-        }
-
-        // Se obtienen los demás campos del formulario
+        // Validación de código
         String codigo = req.getParameter("codigo");
-        String nombre = req.getParameter("nombre");
+        if (codigo == null || codigo.isEmpty()) {
+            errores.put("codigo", "El código es requerido");
+        }
 
-        int stock;
-        try {
-            // Intenta convertir el valor del stock a entero
-            stock = Integer.parseInt(req.getParameter("stock"));
-        } catch (NumberFormatException e) {
-            // Si no es válido, asigna 0 por defecto
-            stock = 0;
+        // Validación de nombre
+        String nombre = req.getParameter("nombre");
+        if (nombre == null || nombre.isEmpty()) {
+            errores.put("nombre", "El nombre es requerido");
+        }
+
+        // Validación de stock
+        String stockStr = req.getParameter("stock");
+        Integer stock = null;
+        if (stockStr == null || stockStr.isEmpty()) {
+            errores.put("stock", "El stock es requerido");
+        } else {
+            try {
+                stock = Integer.parseInt(stockStr);
+                if (stock < 0) {
+                    errores.put("stock", "El stock no puede ser negativo");
+                }
+            } catch (NumberFormatException e) {
+                errores.put("stock", "El stock debe ser un número válido");
+            }
         }
 
         String descripcion = req.getParameter("descripcion");
         String imagen = req.getParameter("imagen");
 
-        // Se crea una instancia de Articulo con todos los datos del formulario
+        // Validación de condición
+        String condicionStr = req.getParameter("condicion");
+        Integer condicion = null;
+        if (condicionStr == null || condicionStr.isEmpty()) {
+            errores.put("condicion", "La condición es requerida");
+        } else {
+            try {
+                condicion = Integer.parseInt(condicionStr);
+                if (condicion != 0 && condicion != 1) {
+                    errores.put("condicion", "La condición debe ser 0 o 1");
+                }
+            } catch (NumberFormatException e) {
+                errores.put("condicion", "La condición debe ser un número válido");
+            }
+        }
+
         Articulo articulo = new Articulo();
-        articulo.setIdArticulo(idArticulo);
-        articulo.setIdCategoria(idCategoria);
+        String idStr = req.getParameter("id");
+        if (idStr != null && !idStr.isEmpty()) {
+            articulo.setIdArticulo(Long.parseLong(idStr));
+        }
+
+        // Si hay errores, volver al formulario
+        if (!errores.isEmpty()) {
+            req.setAttribute("errores", errores);
+            req.setAttribute("articulo", articulo);
+            req.setAttribute("categorias", categoriaService.listar());
+            req.setAttribute("titulo", articulo.getIdArticulo() != null ?
+                    "Editar Artículo" : "Crear Artículo");
+            getServletContext().getRequestDispatcher("/form-articulo.jsp")
+                    .forward(req, resp);
+            return;
+        }
+
+        // Si no hay errores, guardar el artículo
+        Categoria categoria = new Categoria();
+        categoria.setIdCategoria(Long.parseLong(categoriaId));
+
+        articulo.setCategoria(categoria);
         articulo.setCodigo(codigo);
         articulo.setNombre(nombre);
         articulo.setStock(stock);
         articulo.setDescripcion(descripcion);
         articulo.setImagen(imagen);
-        articulo.setCondicion(1); // Estado activo (1)
+        articulo.setCondicion(condicion);
 
-        try {
-            // Se guarda el artículo (insertar o actualizar)
-            service.guardar(articulo);
-
-            // Redirige al listado de artículos
-            resp.sendRedirect(req.getContextPath() + "/articulo");
-        } catch (Exception e) {
-            // En caso de error, imprime el stacktrace en consola
-            e.printStackTrace();
-
-            // Retorna un error 500 al cliente
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar el artículo");
-        }
+        service.guardar(articulo);
+        resp.sendRedirect(req.getContextPath() + "/articulos");
     }
 }

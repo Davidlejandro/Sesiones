@@ -1,25 +1,26 @@
 package global.models;
 
 public class Categoria {
-    // Encapsulamiento usando wrappers para permitir null
+    //Implementar e inicializar las variables de objeto
+    //enacapsulados
     private Long idCategoria;
     private String nombre;
     private String descripcion;
     private int condicion;
 
-    // Constructor vacío
     public Categoria() {
+
     }
 
-    // Constructor con parámetros
     public Categoria(Long idCategoria, String nombre, String descripcion, int condicion) {
         this.idCategoria = idCategoria;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.condicion = condicion;
     }
+    //Implemmentamos los método get and set
 
-    // Getters y Setters
+
     public Long getIdCategoria() {
         return idCategoria;
     }

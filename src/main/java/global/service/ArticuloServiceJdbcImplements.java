@@ -6,55 +6,45 @@ import global.models.Articulo;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
-// Implementación de la interfaz ArticuloService usando JDBC
 public class ArticuloServiceJdbcImplements implements ArticuloService {
+    private ArticuloRepositoryJdbcImplement repositorio;
 
-    // Repositorio que gestiona las operaciones con la base de datos
-    private ArticuloRepositoryJdbcImplement repositoryJdbc;
-
-    // Constructor que recibe una conexión JDBC y crea una instancia del repositorio
-    public ArticuloServiceJdbcImplements(Connection conn) {
-        this.repositoryJdbc = new ArticuloRepositoryJdbcImplement(conn);
+    public ArticuloServiceJdbcImplements(Connection connection) {
+        this.repositorio = new ArticuloRepositoryJdbcImplement(connection);
     }
 
-    // Devuelve una lista de todos los artículos activos
     @Override
     public List<Articulo> listar() {
         try {
-            return repositoryJdbc.lista();
+            return repositorio.listar();
         } catch (SQLException e) {
-            // Lanza una excepción personalizada si ocurre un error en la base de datos
             throw new ServiceJdbcException(e.getMessage(), e.getCause());
         }
     }
 
-    // Busca un artículo por su ID y lo devuelve como Optional
     @Override
-    public Optional<Articulo> porId(Long idArticulo) {
+    public Articulo porId(Long id) {
         try {
-            return Optional.ofNullable(repositoryJdbc.porId(idArticulo));
+            return repositorio.porId(id);
         } catch (SQLException e) {
             throw new ServiceJdbcException(e.getMessage(), e.getCause());
         }
     }
 
-    // Guarda un nuevo artículo o actualiza uno existente
     @Override
     public void guardar(Articulo articulo) {
         try {
-            repositoryJdbc.guardar(articulo);
+            repositorio.guardar(articulo);
         } catch (SQLException e) {
             throw new ServiceJdbcException(e.getMessage(), e.getCause());
         }
     }
 
-    // Elimina (o cambia el estado lógico) de un artículo por su ID
     @Override
-    public void eliminar(Integer idArticulo) {
+    public void eliminar(Long id) {
         try {
-            repositoryJdbc.eliminar(idArticulo);
+            repositorio.eliminar(id);
         } catch (SQLException e) {
             throw new ServiceJdbcException(e.getMessage(), e.getCause());
         }
